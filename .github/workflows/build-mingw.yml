@@ -1,0 +1,42 @@
+name: cpp-cmake-mingw-prebuilt-release-actions-workflow
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  
+jobs:
+  build:
+    name: Create Release
+    runs-on: windows-2019
+    env:
+      libraryName: fuzzylite
+      mingwTargetZip: fuzzylite-${{ github.ref_name }}-x86_64-posix-seh-rev0-8.1.0.zip
+    steps:
+      - name: check mingw version
+        run: gcc --version
+        
+      - name: git clone
+        run: git clone https://github.com/fuzzylite/fuzzylite.git && cd fuzzylite && git checkout v6.0
+
+      - name: cmake
+        shell: cmd
+        run: cd fuzzylite && cmake.exe -G "MinGW Makefiles" -DFL_BACKTRACE=OFF -DFL_BUILD_STATIC=ON -DFL_BUILD_SHARED=OFF -DFL_USE_FLOAT=OFF -DFL_CPP98=OFF -DFL_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX="build/${{ env.libraryName }}" -B./build
+        
+      - name: cmake install
+        shell: cmd
+        run: cd fuzzylite\build && cmake --build . && cmake --install .
+        
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          directory: "fuzzylite/build/${{ env.libraryName }}"
+          filename: "${{ env.mingwTargetZip }}"
+          
+      - name: Release prebuilt
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "fuzzylite/build/${{ env.libraryName }}/${{ env.mingwTargetZip }}"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
