@@ -21,7 +21,7 @@ jobs:
 
       - name: cmake
         shell: cmd
-        run: cd fuzzylite\fuzzylite && cmake.exe -G "MinGW Makefiles" -DFL_BACKTRACE=OFF -DFL_BUILD_STATIC=ON -DFL_BUILD_SHARED=OFF -DFL_USE_FLOAT=OFF -DFL_CPP98=OFF -DFL_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX="build/${{ env.libraryName }}" -B./build
+        run: cd fuzzylite\fuzzylite && cmake.exe -G "MinGW Makefiles" -DFL_BACKTRACE=OFF -DFL_BUILD_STATIC=ON -DFL_BUILD_SHARED=OFF -DFL_USE_FLOAT=OFF -DFL_CPP98=OFF -DFL_BUILD_TESTS=OFF -DCMAKE_CXX_FLAGS="-w" -DCMAKE_C_FLAGS="-w" -DCMAKE_INSTALL_PREFIX="build/${{ env.libraryName }}" -B./build
         
       - name: cmake install
         shell: cmd
