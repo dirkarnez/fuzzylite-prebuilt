@@ -21,22 +21,22 @@ jobs:
 
       - name: cmake
         shell: cmd
-        run: cd fuzzylite && cmake.exe -G "MinGW Makefiles" -DFL_BACKTRACE=OFF -DFL_BUILD_STATIC=ON -DFL_BUILD_SHARED=OFF -DFL_USE_FLOAT=OFF -DFL_CPP98=OFF -DFL_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX="build/${{ env.libraryName }}" -B./build
+        run: cd fuzzylite\fuzzylite && cmake.exe -G "MinGW Makefiles" -DFL_BACKTRACE=OFF -DFL_BUILD_STATIC=ON -DFL_BUILD_SHARED=OFF -DFL_USE_FLOAT=OFF -DFL_CPP98=OFF -DFL_BUILD_TESTS=OFF -DCMAKE_INSTALL_PREFIX="build/${{ env.libraryName }}" -B./build
         
       - name: cmake install
         shell: cmd
-        run: cd fuzzylite\build && cmake --build . && cmake --install .
+        run: cd fuzzylite\fuzzylite\build && cmake --build . && cmake --install .
         
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "fuzzylite/build/${{ env.libraryName }}"
+          directory: "fuzzylite/fuzzylite/build/${{ env.libraryName }}"
           filename: "${{ env.mingwTargetZip }}"
           
       - name: Release prebuilt
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "fuzzylite/build/${{ env.libraryName }}/${{ env.mingwTargetZip }}"
+          artifacts: "fuzzylite/fuzzylite/build/${{ env.libraryName }}/${{ env.mingwTargetZip }}"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
